@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: rarely-style-postgres
+    environment:
+      POSTGRES_DB: rarely-style-db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

@@ -1,0 +1,76 @@
+server:
+  port: ${SERVER_PORT}
+spring:
+  application:
+    environment: ${ENVIRONMENT:dev}
+    name: rarely-style
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      timeout: ${REDIS_TIME_OUT}
+  datasource:
+    url: ${POSTGRESQL_DATABASE_URL}
+    username: ${POSTGRESQL_USERNAME}
+    password: ${POSTGRESQL_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: ${DB_CONNECTION_TIMEOUT}
+      maximum-pool-size: ${DB_MAX_POOL_SIZE}
+      max-lifetime: ${DB_MAX_LIFETIME}
+
+  jpa:
+    show-sql: ${DEBUG:true}
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        temp:
+          use_jdbc_metadata_defaults: false
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: ${DEBUG:true}
+
+  mvc:
+    dispatch-options-request: true
+
+  main:
+    allow-bean-definition-overriding: true
+
+async:
+  config:
+    core-pool-size: ${ASYNC_CORE_POOL_SIZE:3}
+
+logging:
+  level:
+    org.springframework.boot.autoconfigure: INFO
+    org.springframework.web: DEBUG
+    root: INFO
+
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-token:
+    expiration: ${JWT_ACCESS_TOKEN_EXPIRATION}
+  refresh-token:
+    expiration: ${JWT_REFRESH_TOKEN_EXPIRATION}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    use-root-path: true
+    enabled: true
+
+  packages-to-scan: com.example.rarelystylebe.app.api
+
+
+
+
+
+
+
