@@ -68,6 +68,12 @@ springdoc:
 
   packages-to-scan: com.example.rarelystylebe.app.api
 
+upload:
+  dir: ${UPLOAD_DIR}
+url:
+  port: ${PORT_SERVER}
+  host: ${HOST_SERVER}
+
 
 
 

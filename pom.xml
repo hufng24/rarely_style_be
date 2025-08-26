@@ -160,6 +160,17 @@
                         </configuration>
                     </execution>
 
+                    <execution>
+                        <id>images</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                        <configuration>
+                            <configFile>services/images/dev/flyway.conf</configFile>
+                        </configuration>
+                    </execution>
+
                 </executions>
 
 

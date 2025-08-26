@@ -11,7 +11,9 @@ public enum ErrorMessage implements BaseErrorMessage {
     PRODUCT_DETAIL_NOT_FOUND("Sản phẩm chi tiet không được để trống"),
     CATEGORY_NOT_FOUND("Danh mục không được để trống"),
     USER_NOT_FOUND("Không tìm thấy user"),
-    ROLE_NOT_FOUND("K tìm thấy role");
+    ROLE_NOT_FOUND("K tìm thấy role"),
+    FILE_NOT_FOUND("Không tìm thấy file"),
+    EMAIL_ALREADY_EXISTS("Email đã tồn tại");
     public String val;
 
     private ErrorMessage(String label) {

@@ -184,16 +184,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email đã tồn tại");
+            throw new ResponseException(HttpStatus.BAD_REQUEST,ErrorMessage.EMAIL_ALREADY_EXISTS);
         }
+
 
         User user = new User();
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
+
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
         user.setIsDeleted(false);
-
+        if(request.getAvatar() != null){
+            user.setAvatar(request.getAvatar());
+        }else {
+            user.setAvatar("https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg");
+        }
         return userRepository.save(user);
     }
 
