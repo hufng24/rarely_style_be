@@ -22,8 +22,8 @@ import java.util.Set;
 @Where(clause = "is_deleted = false")
 public class User extends BaseEntity {
 
-    @Column(nullable = false, name = "name")
-    String name;
+    @Column(nullable = false, name = "full_name")
+    String fullName;
 
     @Column(nullable = false, name = "password")
     String password;

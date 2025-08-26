@@ -8,6 +8,8 @@ import com.example.rarelystylebe.domain.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("api/v1/auth")
@@ -15,14 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class LoginController {
 
-  private final UserService userService;
-
-//  private final EmailService emailService;
-
-  @RestController
-  @RequestMapping("/api/auth")
-  @RequiredArgsConstructor
-  public class AuthController {
 
     private final UserService userService;
 
@@ -47,6 +41,8 @@ public class LoginController {
   }
 
 
+
+
 //  @PostMapping("/register")
 //  public ResponseEntity<String> registerEmail(@RequestParam String email) {
 //    if (emailService.isEmailRegistered(email)) {
@@ -60,4 +56,4 @@ public class LoginController {
 //  public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
 //    return ResponseEntity.ok(emailService.isEmailRegistered(email));
 //  }
-}
+

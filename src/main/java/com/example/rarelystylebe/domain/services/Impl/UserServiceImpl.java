@@ -5,6 +5,7 @@ import com.eps.shared.models.exceptions.ResponseException;
 import com.example.rarelystylebe.app.dtos.filter.UserParam;
 import com.example.rarelystylebe.app.dtos.request.AssignUserRoleRequest;
 import com.example.rarelystylebe.app.dtos.request.LoginRequest;
+import com.example.rarelystylebe.app.dtos.request.RegisterRequest;
 import com.example.rarelystylebe.app.dtos.request.UserRequest;
 import com.example.rarelystylebe.app.dtos.response.AssignUserRoleResponse;
 import com.example.rarelystylebe.app.dtos.response.LoginResponse;
@@ -13,6 +14,7 @@ import com.example.rarelystylebe.app.dtos.response.UserResponse;
 import com.example.rarelystylebe.domain.entities.Permission;
 import com.example.rarelystylebe.domain.entities.Role;
 import com.example.rarelystylebe.domain.entities.User;
+import com.example.rarelystylebe.domain.enums.UserStatus;
 import com.example.rarelystylebe.domain.exceptions.ErrorMessage;
 import com.example.rarelystylebe.domain.repositories.RoleRepository;
 import com.example.rarelystylebe.domain.repositories.UserRepository;
@@ -50,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse createUser(UserRequest userRequest) {
         User user = new User();
-        user.setName(userRequest.getName());
+        user.setFullName(userRequest.getFullName());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setEmail(userRequest.getEmail());
         user.setGender(userRequest.getGender());
@@ -151,15 +153,15 @@ public class UserServiceImpl implements UserService {
                 .toList();
         extraClaims.put("permissions", permissions);
 
-        String accessToken = jwtService.generateAccessToken(user.getName(), extraClaims);
-        String refreshToken = jwtService.generateRefreshToken(user.getName());
+        String accessToken = jwtService.generateAccessToken(user.getFullName(), extraClaims);
+        String refreshToken = jwtService.generateRefreshToken(user.getFullName());
 
-        String redisKey = "refresh_token:" + user.getName();
+        String redisKey = "refresh_token:" + user.getFullName();
         redisService.saveDataWithTTL(redisKey, refreshToken, refreshTokenExpiration);
 
         UserResponse userInfo = UserResponse.builder()
                 .id(user.getId())
-                .name(user.getName())
+                .fullName(user.getFullName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .avatar(user.getAvatar())
@@ -180,6 +182,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User register(RegisterRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email đã tồn tại");
+        }
+
+        User user = new User();
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setStatus(UserStatus.ACTIVE);
+        user.setIsDeleted(false);
+
+        return userRepository.save(user);
+    }
+
+    @Override
     public AssignUserRoleResponse assignUserRole(AssignUserRoleRequest assignUserRoleRequest) {
         User user = userRepository.findByEmail(assignUserRoleRequest.getEmail()).orElseThrow(() -> new ResponseException(HttpStatus.NOT_FOUND,"KHONG TIM THAY EMAIL"));
         Set<Role> roles = new HashSet<>(roleRepository.findAllById(assignUserRoleRequest.getRoleIds()));
@@ -189,7 +207,7 @@ public class UserServiceImpl implements UserService {
                 .map(r -> new RoleResponse(r.getId(), r.getName()))
                 .collect(Collectors.toSet());
 
-        return new AssignUserRoleResponse(saved.getId(), saved.getName(), roleResponses);
+        return new AssignUserRoleResponse(saved.getId(), saved.getFullName(), roleResponses);
     }
 
 

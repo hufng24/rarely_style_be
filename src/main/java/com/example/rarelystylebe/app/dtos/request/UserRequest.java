@@ -15,7 +15,7 @@ import java.util.Set;
 public class UserRequest {
 
     @NotBlank(message = "Tên không được để trống")
-    private String name;
+    private String fullName;
 
     @NotBlank(message = "Mật khẩu không được để trống")
     @Size(min = 8, message = "Mật khẩu ít nhất 8 ký tự")

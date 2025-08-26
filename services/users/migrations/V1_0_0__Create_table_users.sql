@@ -12,9 +12,9 @@ CREATE TABLE users.rel_permission_roles
 
 CREATE TABLE users.permission
 (
-    id   SERIAL PRIMARY KEY,
-    name VARCHAR(50),
-    value VARCHAR(255),
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR(50),
+    value       VARCHAR(255),
     description VARCHAR
 );
 
@@ -28,14 +28,14 @@ CREATE TABLE users.user
 (
     id           SERIAL PRIMARY KEY,
     password     VARCHAR,
-    name         VARCHAR(255),
+    full_name     VARCHAR(255),
     email        VARCHAR unique,
     gender       VARCHAR,
     avatar       VARCHAR,
     phone_number VARCHAR,
     status       VARCHAR,
-    is_admin     BOOLEAN DEFAULT FALSE,
+    is_admin     BOOLEAN   DEFAULT FALSE,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_deleted   BOOLEAN DEFAULT FALSE
+    is_deleted   BOOLEAN   DEFAULT FALSE
 )

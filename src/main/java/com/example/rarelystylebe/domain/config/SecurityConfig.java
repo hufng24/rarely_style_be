@@ -20,9 +20,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                         "api/v1/auth/login",
                         "api/v1/auth/change_password",
                         "api/v1/auth/register",
-                        "api/v1/auth/check",
-                        "api/v1/users",
-                        "api/v1/roles"
+                        "api/v1/auth/check"
                 );
         ;
     }

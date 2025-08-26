@@ -4,6 +4,7 @@ package com.example.rarelystylebe.domain.services;
 import com.example.rarelystylebe.app.dtos.filter.UserParam;
 import com.example.rarelystylebe.app.dtos.request.AssignUserRoleRequest;
 import com.example.rarelystylebe.app.dtos.request.LoginRequest;
+import com.example.rarelystylebe.app.dtos.request.RegisterRequest;
 import com.example.rarelystylebe.app.dtos.request.UserRequest;
 import com.example.rarelystylebe.app.dtos.response.AssignUserRoleResponse;
 import com.example.rarelystylebe.app.dtos.response.LoginResponse;
@@ -23,7 +24,10 @@ public interface UserService {
 
     User findById(Long id);
 
+    User register(RegisterRequest request);
+
     LoginResponse login(LoginRequest request);
+
 
     AssignUserRoleResponse assignUserRole(AssignUserRoleRequest assignUserRoleRequest);
 

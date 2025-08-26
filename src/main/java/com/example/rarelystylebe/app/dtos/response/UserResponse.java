@@ -20,7 +20,7 @@ import java.util.Set;
 @SuperBuilder
 public class UserResponse extends BaseResponse {
     private Long id;
-    private String name;
+    private String fullName;
     private String email;
     private String avatar;
     private String phoneNumber;
