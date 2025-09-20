@@ -14,14 +14,15 @@ public class SizeSpecification {
         return (Root<Size> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
             Predicate predicate = cb.conjunction();
 
-            if (StringUtils.isNotBlank(param.getName())) {
-                predicate = cb.and(predicate, cb.like(cb.lower(root.get("name")), "%" + param.getName().toLowerCase() + "%"));
+            if (StringUtils.isNotBlank(param.getSearch())) {
+                String search = "%" + param.getSearch().toLowerCase() + "%";
+
+                Predicate namePredicate = cb.like(cb.lower(root.get("name")), search);
+
+                predicate = cb.and(predicate, cb.or(namePredicate));
             }
 
-            if (StringUtils.isNotBlank(param.getCode())) {
-                predicate = cb.and(predicate, cb.like(cb.lower(root.get("code")), "%" + param.getCode().toLowerCase() + "%"));
-            }
-
+            query.orderBy(cb.desc(root.get("id")));
             return predicate;
         };
     }

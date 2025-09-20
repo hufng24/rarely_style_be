@@ -5,7 +5,5 @@ import lombok.Data;
 @Data
 public class ColorParam {
 
-  private String name;
-
-  private String code;
+  private String search;
 }

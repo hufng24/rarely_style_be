@@ -14,13 +14,18 @@ public class ColorSpecification {
         return (Root<Color> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
             Predicate predicate = cb.conjunction();
 
-            if (StringUtils.isNotBlank(param.getName())) {
-                predicate = cb.and(predicate, cb.like(cb.lower(root.get("name")), "%" + param.getName().toLowerCase() + "%"));
+            if (StringUtils.isNotBlank(param.getSearch())) {
+                String search = "%" + param.getSearch().toLowerCase() + "%";
+
+                Predicate namePredicate = cb.like(cb.lower(root.get("name")), search);
+                Predicate codePredicate = cb.like(cb.lower(root.get("code")), search);
+
+                // OR giữa name và code
+                predicate = cb.and(predicate, cb.or(namePredicate, codePredicate));
             }
 
-            if (StringUtils.isNotBlank(param.getCode())) {
-                predicate = cb.and(predicate, cb.like(cb.lower(root.get("code")), "%" + param.getCode().toLowerCase() + "%"));
-            }
+            // Thêm ORDER BY id DESC
+            query.orderBy(cb.desc(root.get("id")));
 
             return predicate;
         };

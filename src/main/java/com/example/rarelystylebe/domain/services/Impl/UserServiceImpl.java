@@ -18,6 +18,7 @@ import com.example.rarelystylebe.domain.enums.UserStatus;
 import com.example.rarelystylebe.domain.exceptions.ErrorMessage;
 import com.example.rarelystylebe.domain.repositories.RoleRepository;
 import com.example.rarelystylebe.domain.repositories.UserRepository;
+import com.example.rarelystylebe.domain.repositories.specification.UserSpecification;
 import com.example.rarelystylebe.domain.services.JwtService;
 import com.example.rarelystylebe.domain.services.RedisService;
 import com.example.rarelystylebe.domain.services.UserService;
@@ -26,7 +27,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -78,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserResponse updateUser(Long id, UserRequest userRequest) throws JsonMappingException{
+    public UserResponse updateUser(Long id, UserRequest userRequest) throws JsonMappingException {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy user với id: " + id));
 
@@ -122,7 +126,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
@@ -131,10 +134,10 @@ public class UserServiceImpl implements UserService {
     public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResponseException(HttpStatus.NOT_FOUND,"Invalid username or password"));
+                .orElseThrow(() -> new ResponseException(HttpStatus.NOT_FOUND, "Invalid username or password"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new ResponseException(HttpStatus.NOT_FOUND,"Invalid username or password");
+            throw new ResponseException(HttpStatus.NOT_FOUND, "Invalid username or password");
         }
 
         Map<String, Object> extraClaims = new HashMap<>();
@@ -184,7 +187,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new ResponseException(HttpStatus.BAD_REQUEST,ErrorMessage.EMAIL_ALREADY_EXISTS);
+            throw new ResponseException(HttpStatus.BAD_REQUEST, ErrorMessage.EMAIL_ALREADY_EXISTS);
         }
 
 
@@ -195,9 +198,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
         user.setIsDeleted(false);
-        if(request.getAvatar() != null){
+        if (request.getAvatar() != null) {
             user.setAvatar(request.getAvatar());
-        }else {
+        } else {
             user.setAvatar("https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg");
         }
         return userRepository.save(user);
@@ -205,7 +208,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AssignUserRoleResponse assignUserRole(AssignUserRoleRequest assignUserRoleRequest) {
-        User user = userRepository.findByEmail(assignUserRoleRequest.getEmail()).orElseThrow(() -> new ResponseException(HttpStatus.NOT_FOUND,"KHONG TIM THAY EMAIL"));
+        User user = userRepository.findByEmail(assignUserRoleRequest.getEmail()).orElseThrow(() -> new ResponseException(HttpStatus.NOT_FOUND, "KHONG TIM THAY EMAIL"));
         Set<Role> roles = new HashSet<>(roleRepository.findAllById(assignUserRoleRequest.getRoleIds()));
         user.setRoles(roles);
         User saved = userRepository.save(user);
@@ -246,9 +249,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserResponse> filter(UserParam userParam, Pageable pageable) {
-        return null;
+        Specification<User> userSpec = UserSpecification.filterSpec(userParam);
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "id")
+        );
+        Page<User> userPage = userRepository.findAll(userSpec, sortedPageable);
+        return userPage.map(user -> objectMapper.convertValue(user, UserResponse.class));
     }
-
 
 
 }

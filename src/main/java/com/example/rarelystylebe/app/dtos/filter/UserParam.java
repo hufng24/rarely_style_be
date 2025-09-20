@@ -6,11 +6,5 @@ import lombok.Data;
 @Data
 public class UserParam {
 
-    private String name;
-
-    private String email;
-
-    private Boolean isAdmin;
-
-    private UserStatus status;
+    private String search;
 }

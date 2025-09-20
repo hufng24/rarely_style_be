@@ -1,13 +1,16 @@
 package com.example.rarelystylebe.app.api;
 
+import com.example.rarelystylebe.app.dtos.filter.UserParam;
 import com.example.rarelystylebe.app.dtos.request.AssignUserRoleRequest;
 import com.example.rarelystylebe.app.dtos.request.UserRequest;
 import com.example.rarelystylebe.app.dtos.response.AssignUserRoleResponse;
 import com.example.rarelystylebe.app.dtos.response.UserResponse;
 import com.example.rarelystylebe.domain.services.UserService;
+import com.example.rarelystylebe.domain.utils.PageUtils;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,5 +32,10 @@ public class UserController {
     @PutMapping
     public UserResponse updateUser(@Valid @RequestBody Long id, UserRequest userRequest) throws JsonMappingException {
         return userService.updateUser(id,userRequest);
+    }
+
+    @GetMapping
+    public PageUtils<UserResponse> filter(UserParam userParam, Pageable pageable) {
+        return new PageUtils<>(userService.filter(userParam,pageable));
     }
 }
