@@ -32,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -258,6 +259,4 @@ public class UserServiceImpl implements UserService {
         Page<User> userPage = userRepository.findAll(userSpec, sortedPageable);
         return userPage.map(user -> objectMapper.convertValue(user, UserResponse.class));
     }
-
-
 }
